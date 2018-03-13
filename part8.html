@@ -1,0 +1,15 @@
+<!-- This goes in the site wide Head Code -->
+<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-auth.js"></script>
+
+<!-- This goes in the site wide Footer Code -->
+<script>
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            console.log('User is logged in');
+        }
+        else {
+            console.log('No user is logged in');
+        }
+    })
+</script>
+

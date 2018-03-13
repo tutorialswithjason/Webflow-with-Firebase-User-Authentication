@@ -1,0 +1,7 @@
+<!-- This goes in the site wide Footer Code -->
+<script>
+    document.getElementById("btnLogOut").addEventListener('click', function (event) {
+        firebase.auth().signOut();
+      	console.log('User was logged out');
+    })
+</script>
