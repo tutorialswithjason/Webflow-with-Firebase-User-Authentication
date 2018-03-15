@@ -2,16 +2,36 @@
 <script>
     firebase.auth().onAuthStateChanged(user => {
         // If user is logged in then show log out button, profile button BUT hide the log in button
+        if (user) {
+            document.getElementById("btnLogOut").style.display = 'inline-block';
+            document.getElementById("btnProfile").style.display = 'inline-block';
+            document.getElementById("btnLogIn").style.display = 'none';
+        }
+        // If user is logged out then show log in button BUT hide the log out button and profile button  
+        else {
+            document.getElementById("btnLogIn").style.display = 'inline-block';
+            document.getElementById("btnLogOut").style.display = 'none';
+            document.getElementById("btnProfile").style.display = 'none';
+        }
+    })
+</script> 
+
+<script>
+    firebase.auth().onAuthStateChanged(user => {
+        // If user is logged in then show log out button, profile button BUT hide the log in button
+
             if (user) {
                 document.getElementById("btnLogOut").style.display = 'inline-block';
                 document.getElementById("btnProfile").style.display = 'inline-block';
                 document.getElementById("btnLogIn").style.display = 'none';
             }
+
             // If user is logged out then show log in button BUT hide the log out button and profile button  
             else {
                 document.getElementById("btnLogIn").style.display = 'inline-block';
                 document.getElementById("btnLogOut").style.display = 'none';
                 document.getElementById("btnProfile").style.display = 'none';
             }
+            console.log('Buttons hidden');
     })
 </script>

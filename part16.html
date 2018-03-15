@@ -1,0 +1,99 @@
+<script type="text/javascript">
+
+    //Run the initApp() function as soon as the page loads
+    window.addEventListener('load', function () {
+        initApp()
+    });
+
+    //Sets all the inputs on the Profile page
+    initApp = function () {
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+
+                // Get the authenticated user's email address
+                if (user.email == null) {
+                    var email = "";
+                } else {
+                    var email = user.email;
+                }
+                // Pass the email address to the email-address input on the Profile page
+                document.getElementById('email-address').value = email;
+
+                //Read the user's custom info from the Firebase database if it exists
+                var uid = firebase.auth().currentUser.uid;
+                firebase.database().ref().child('users/' + uid).once('value', function (snapshot) {
+                    if (snapshot.val() !== null) {
+                        var ref = firebase.database().ref().child('users/' + uid);
+                        ref.on("value", function (snapshot) {
+
+                            //Get the user's first name if it exists
+                            if (snapshot.val().firstName == undefined || snapshot.val().firstName == null) {
+                                var firstName = "";
+                            } else {
+                                var firstName = snapshot.val().firstName
+                            }
+                            //Pass the user's first name to the first-name input on the profile page
+                            document.getElementById('first-name').value = firstName;
+
+                            //Get the user's last name if it exists
+                            if (snapshot.val().lastName == undefined || snapshot.val().lastName == null) {
+                                var lastName = "";
+                            } else {
+                                var lastName = snapshot.val().lastName
+                            }
+                            //Pass the user's last name to the last-name input on the profile page
+                            document.getElementById('last-name').value = lastName;
+
+                            //Get the user's phone number if it exists
+                            if (snapshot.val().phoneNumber == undefined || snapshot.val().phoneNumber == null) {
+                                var phoneNumber = "";
+                            } else {
+                                var phoneNumber = snapshot.val().phoneNumber
+                            }
+                            //Pass the user's phone number to the phone number input on the profile page
+                            document.getElementById('phone-number').value = phoneNumber;
+
+                            //Get the user's bio if it exists
+                            if (snapshot.val().bio == undefined || snapshot.val().bio == null) {
+                                var bio = "";
+                            } else {
+                                var bio = snapshot.val().bio
+                            }
+                            //Pass the user's bio to the phone bio input on the profile page
+                            document.getElementById('bio').value = bio;
+
+                        }, function (error) {
+                            console.log("Error: " + error);
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+    //Allow the user to update their custom profile info
+    document.getElementById("btnUpdateProfile").addEventListener('click', function (event) {
+        var firstName = document.getElementById('first-name').value;
+        var lastName = document.getElementById('last-name').value;
+        var phoneNumber = document.getElementById('phone-number').value;
+        var bio = document.getElementById('bio').value
+
+        var uid = firebase.auth().currentUser.uid;
+
+        firebase.database().ref('users/' + uid).update({
+            uid: uid,
+            firstName: firstName,
+            lastName: lastName,
+            phoneNumber: phoneNumber,
+            bio: bio
+        })
+            //Trigger a success message if it works
+            .then(function () {
+                console.log("Success! Profile updated.");
+            })
+            //Trigger an error message if it fails
+            .catch(function (error) {
+                console.log("Whoops, something went wrong " + error);
+            })
+    })
+</script>

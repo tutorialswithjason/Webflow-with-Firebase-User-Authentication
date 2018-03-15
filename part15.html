@@ -1,0 +1,50 @@
+<script type="text/javascript">
+
+    //Run the initApp() function as soon as the page loads
+    window.addEventListener('load', function () {
+        initApp()
+    });
+
+    //Sets all the inputs on the Profile page
+    initApp = function () {
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+
+                // Get the authenticated user's email address
+                if (user.email == null) {
+                    var email = "";
+                } else {
+                    var email = user.email;
+                }
+                // Pass the email address to the email-address input on the Profile page
+                document.getElementById('email-address').value = email;
+            }
+        })
+    }
+
+    //Allow the user to update their custom profile info
+    document.getElementById("btnUpdateProfile").addEventListener('click', function (event) {
+        var firstName = document.getElementById('first-name').value;
+        var lastName = document.getElementById('last-name').value;
+        var phoneNumber = document.getElementById('phone-number').value;
+        var bio = document.getElementById('bio').value
+
+        var uid = firebase.auth().currentUser.uid;
+
+        firebase.database().ref('users/' + uid).update({
+            uid: uid,
+            firstName: firstName,
+            lastName: lastName,
+            phoneNumber: phoneNumber,
+            bio: bio
+        })
+            //Trigger a success message if it works
+            .then(function () {
+                console.log("Success! Profile updated.");
+            })
+            //Trigger an error message if it fails
+            .catch(function (error) {
+                console.log("Whoops, something went wrong " + error);
+            })
+    })
+</script>
